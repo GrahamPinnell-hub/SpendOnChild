@@ -11,8 +11,7 @@ const PERSONAS = [
     annualIncome: 66148,
     adults: 2,
     needsPaidCare: false,
-    note:
-      "Uses Oklahoma's 2024 median household income. Child care is mostly unpaid parent labor, so cash costs drop but time pressure rises.",
+    note: "No full-time daycare",
   },
   {
     id: "single",
@@ -20,8 +19,7 @@ const PERSONAS = [
     annualIncome: 35174,
     adults: 1,
     needsPaidCare: true,
-    note:
-      "Uses Oklahoma's 2024 median family income for female householders with own children and no spouse present.",
+    note: "One income",
   },
   {
     id: "working",
@@ -29,8 +27,7 @@ const PERSONAS = [
     annualIncome: 45853,
     adults: 1,
     needsPaidCare: true,
-    note:
-      "Uses Oklahoma's 2024 median earnings for female full-time, year-round workers. Paid care is turned on by default.",
+    note: "Paid daycare",
   },
 ];
 
@@ -38,17 +35,17 @@ const CHECKPOINTS = [
   {
     years: 1,
     name: "Age 1",
-    note: "The newborn year: diapers, feeding, baby gear, doctor visits, and infant care hit all at once.",
+    note: "Newborn year",
   },
   {
     years: 5,
     name: "Age 5",
-    note: "The early-childhood gauntlet: toddler food, clothes, care, pre-K, sick days, and replacement gear.",
+    note: "Early childhood",
   },
   {
     years: 18,
     name: "Age 18",
-    note: "The long haul: school years, transportation, healthcare, activities, and the college-choice jump scare.",
+    note: "Long haul",
   },
 ];
 
@@ -87,27 +84,27 @@ const SAVINGS = [
   {
     id: "costco",
     name: "Costco Gold Star",
-    note: "Adds a $65 yearly fee, then models bulk savings on food, diapers, wipes, and safety gear.",
+    note: "Bulk savings",
   },
   {
     id: "handMeDowns",
     name: "Hand-me-down network",
-    note: "Cuts clothing, shoes, gear, and some school costs when relatives, friends, and swaps come through.",
+    note: "Used gear",
   },
   {
     id: "wic",
     name: "WIC / food help check",
-    note: "If the household is under the WIC income limit, formula and early food costs get a partial offset.",
+    note: "Food help",
   },
   {
     id: "homeCare",
     name: "Licensed home daycare",
-    note: "Uses the lower home-based infant-care reference instead of center-based care.",
+    note: "Lower care rate",
   },
   {
     id: "dhsCare",
     name: "OKDHS child care subsidy",
-    note: "If the simplified income check passes, child care is modeled as a family copay instead of full price.",
+    note: "Copay check",
   },
 ];
 
@@ -119,6 +116,7 @@ const ITEMS = [
     required: true,
     colors: ["#20b15a", "#f5c84b"],
     label: "Food",
+    photo: "https://cdn.pixabay.com/photo/2017/07/28/15/53/drinking-milk-2549021_1280.jpg",
     base: { 1: 1800, 5: 11400, 18: 58200 },
     note: "Formula, baby food, groceries, snacks, and school-age food at home.",
   },
@@ -129,6 +127,7 @@ const ITEMS = [
     required: (years) => years <= 5,
     colors: ["#40a7b8", "#ffffff"],
     label: "Diapers",
+    photo: "https://cdn.pixabay.com/photo/2012/03/01/00/23/baby-19534_640.jpg",
     base: { 1: 936, 5: 2400, 18: 2400 },
     note: "The early years are tiny, expensive, and somehow always sticky.",
   },
@@ -139,6 +138,7 @@ const ITEMS = [
     required: true,
     colors: ["#e56f7a", "#f5c84b"],
     label: "Clothes",
+    photo: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Baby_shoes_%28Unsplash%29.jpg/960px-Baby_shoes_%28Unsplash%29.jpg",
     base: { 1: 650, 5: 2650, 18: 11750 },
     note: "Growth spurts, coats, shoes, school clothes, and replacements.",
   },
@@ -149,6 +149,7 @@ const ITEMS = [
     required: true,
     colors: ["#20b15a", "#ffffff"],
     label: "Care",
+    photo: "https://cdn.pixabay.com/photo/2018/06/09/17/13/doctor-3464763_1280.jpg",
     base: { 1: 1200, 5: 3600, 18: 11400 },
     note: "Checkups, medicine, dental basics, urgent visits, and insurance gaps.",
   },
@@ -159,6 +160,7 @@ const ITEMS = [
     required: (years, persona) => persona.needsPaidCare,
     colors: ["#40a7b8", "#f5c84b"],
     label: "Care",
+    photo: "https://cdn.pixabay.com/photo/2020/04/09/08/06/kid-5020226_1280.jpg",
     base: { 1: 10065, 5: 39165, 18: 72965 },
     stayHomeBase: { 1: 1200, 5: 4800, 18: 9000 },
     note: "Full-time care for working households, or limited respite care for stay-at-home mode.",
@@ -170,6 +172,7 @@ const ITEMS = [
     required: true,
     colors: ["#1d241f", "#40a7b8"],
     label: "Home",
+    photo: "https://cdn.pixabay.com/photo/2023/01/25/13/47/nursery-7743630_1280.jpg",
     base: { 1: 3600, 5: 18000, 18: 64800 },
     note: "Extra bedroom pressure, utilities, household supplies, and child-safe space.",
   },
@@ -180,6 +183,7 @@ const ITEMS = [
     required: true,
     colors: ["#f5c84b", "#1d241f"],
     label: "Rides",
+    photo: "https://cdn.pixabay.com/photo/2019/04/02/16/08/baby-carriage-4098055_1280.jpg",
     base: { 1: 800, 5: 4500, 18: 17100 },
     note: "Car seats, more errands, school runs, gas, repairs, and activities.",
   },
@@ -190,6 +194,7 @@ const ITEMS = [
     required: (years) => years >= 5,
     colors: ["#40a7b8", "#ffffff"],
     label: "School",
+    photo: "https://cdn.pixabay.com/photo/2015/05/11/14/44/pencils-762555_1280.jpg",
     base: { 1: 0, 5: 450, 18: 9000 },
     note: "Supplies, fees, books, field trips, sports, clubs, and technology.",
   },
@@ -200,6 +205,7 @@ const ITEMS = [
     required: true,
     colors: ["#e56f7a", "#ffffff"],
     label: "Gear",
+    photo: "https://cdn.pixabay.com/photo/2022/08/10/04/18/mother-7376325_1280.jpg",
     base: { 1: 850, 5: 1200, 18: 1200 },
     note: "Car seat, crib, stroller, babyproofing, and gear that gets outgrown fast.",
   },
@@ -210,6 +216,7 @@ const ITEMS = [
     required: true,
     colors: ["#20b15a", "#1d241f"],
     label: "Buffer",
+    photo: "https://cdn.pixabay.com/photo/2021/02/17/17/22/savings-6024919_1280.jpg",
     base: { 1: 1000, 5: 5000, 18: 18000 },
     note: "The boring money that saves you when tires, fevers, and job chaos show up.",
   },
@@ -220,6 +227,7 @@ const ITEMS = [
     required: false,
     colors: ["#f5c84b", "#e56f7a"],
     label: "College",
+    photo: "https://cdn.pixabay.com/photo/2013/01/20/04/53/college-75535_1280.jpg",
     base: { 1: 0, 5: 0, 18: 39240 },
     note: "Optional at age 18. Public four-year tuition and fees, multiplied by four years. Pain, but itemized.",
   },
@@ -421,22 +429,6 @@ function fullyCovered() {
   return remainingTotal() >= 0 ? essentialsCovered() : 0;
 }
 
-function iconSvg(item) {
-  const [primary, secondary] = item.colors;
-  const text = item.label;
-  const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="${text}">
-      <rect width="120" height="120" rx="22" fill="${secondary}"/>
-      <circle cx="80" cy="34" r="24" fill="${primary}" opacity=".18"/>
-      <circle cx="42" cy="68" r="34" fill="${primary}"/>
-      <rect x="29" y="78" width="62" height="14" rx="7" fill="#1d241f" opacity=".14"/>
-      <text x="60" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="800" fill="white">${text}</text>
-    </svg>
-  `;
-
-  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
-}
-
 function setPurchase(itemId, nextValue) {
   state.purchases[itemId] = Math.max(0, Math.min(99, nextValue));
   render();
@@ -468,7 +460,7 @@ function renderCheckpoints() {
     return `
       <button class="checkpoint-card${active}" type="button" data-years="${checkpoint.years}">
         <h3>${checkpoint.name}</h3>
-        <strong>${money.format(totalBudgetForYears(checkpoint.years))}</strong>
+        <strong>${checkpoint.years} ${checkpoint.years === 1 ? "year" : "years"}</strong>
         <p>${checkpoint.note}</p>
       </button>
     `;
@@ -492,19 +484,17 @@ function renderSavings() {
     let status = "";
 
     if (saving.id === "wic") {
-      status = isWicEligible()
-        ? `Eligible in this model. Limit: ${money.format(wicLimit())}.`
-        : `Not eligible in this model. Limit: ${money.format(wicLimit())}.`;
+      status = isWicEligible() ? "Eligible" : "Not eligible";
     }
 
     if (saving.id === "dhsCare") {
-      if (!getPersona().needsPaidCare) status = "Paid child care is not required in this profile.";
-      else if (isDhsEligible()) status = `Eligible estimate. Copay: ${money.format(dhsMonthlyCopay())}/mo.`;
-      else status = `Not eligible in this model. Max: ${money.format(dhsBracket().max * 12)}/yr.`;
+      if (!getPersona().needsPaidCare) status = "Not needed";
+      else if (isDhsEligible()) status = `Copay ${money.format(dhsMonthlyCopay())}/mo`;
+      else status = "Not eligible";
     }
 
     if (saving.id === "costco") {
-      status = `${money.format(65 * state.years)} membership cost at this checkpoint.`;
+      status = `${money.format(65 * state.years)} fee`;
     }
 
     return `
@@ -587,7 +577,6 @@ function renderItems() {
   els.itemGrid.innerHTML = ITEMS.map((item) => {
     const unitCost = adjustedUnitCost(item);
     const quantity = state.purchases[item.id];
-    const required = isItemRequired(item);
     const disabled = unitCost === 0 && item.id !== "school";
     const hiddenForEarlyCollege = item.id === "college" && state.years !== 18;
     const hiddenEmptySchool = item.id === "school" && state.years === 1;
@@ -597,13 +586,11 @@ function renderItems() {
     return `
       <article class="item-card">
         <div class="item-art">
-          <img src="${iconSvg(item)}" alt="${item.name}" />
+          <img src="${item.photo}" alt="${item.name}" />
         </div>
         <div class="item-body">
           <h3>${item.name}</h3>
           <span class="item-price">${money.format(unitCost)}</span>
-          <p class="item-meta">${required ? "Required" : "Optional"} coverage unit for one child at this checkpoint.</p>
-          <p>${item.note}</p>
         </div>
         <div class="item-controls">
           <button type="button" data-sell="${item.id}" ${quantity === 0 ? "disabled" : ""}>Sell</button>
