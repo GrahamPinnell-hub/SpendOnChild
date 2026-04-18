@@ -163,7 +163,7 @@ const ITEMS = [
     name: "Baby Outfit",
     category: "Clothes",
     required: true,
-    photo: "https://cdn.pixabay.com/photo/2018/05/12/06/04/onesie-3392517_1280.jpg",
+    photo: "https://cdn.pixabay.com/photo/2018/05/12/06/06/onesie-3392524_640.jpg",
     price: 18,
     target: (years) => (years <= 1 ? 10 : years * 5),
     note: "Growth spurts do not respect budgets.",
@@ -193,7 +193,7 @@ const ITEMS = [
     name: "Bottle Set",
     category: "Bottles",
     required: (years) => years <= 1,
-    photo: "https://cdn.pixabay.com/photo/2012/04/12/18/57/baby-30177_1280.png",
+    photo: "https://cdn.pixabay.com/photo/2016/10/09/04/27/children-1725113_1280.jpg",
     price: 22,
     target: (years) => (years <= 1 ? 3 : 0),
     note: "Bottles, nipples, and the drawer they take over.",
@@ -404,6 +404,7 @@ const state = {
   years: 1,
   childCount: 1,
   riskSeed: Math.floor(Math.random() * 1000000),
+  showNeededOnly: false,
   savings: new Set(["handMeDowns"]),
   purchases: Object.fromEntries(ITEMS.map((item) => [item.id, 0])),
 };
@@ -427,6 +428,8 @@ const els = {
   verdict: document.querySelector("#verdict"),
   progressTitle: document.querySelector("#progressTitle"),
   itemGrid: document.querySelector("#itemGrid"),
+  itemSummary: document.querySelector("#itemSummary"),
+  neededOnly: document.querySelector("#neededOnly"),
   autoBuy: document.querySelector("#autoBuy"),
   resetGame: document.querySelector("#resetGame"),
   receipt: document.querySelector("#receipt"),
@@ -671,6 +674,12 @@ function setPurchase(itemId, nextValue) {
   render();
 }
 
+function missingRequiredUnits() {
+  return requiredItems().reduce((sum, item) => {
+    return sum + Math.max(0, requiredQuantity(item) - state.purchases[item.id]);
+  }, 0);
+}
+
 function renderPersonas() {
   els.personaGrid.innerHTML = PERSONAS.map((persona) => {
     const active = persona.id === state.personaId ? " is-active" : "";
@@ -885,16 +894,26 @@ function renderVerdict() {
 }
 
 function renderItems() {
-  els.itemGrid.innerHTML = ITEMS.map((item) => {
+  const missing = missingRequiredUnits();
+  els.itemSummary.textContent = missing > 0 ? `${missing} to buy` : "Essentials covered";
+  els.neededOnly.classList.toggle("is-active", state.showNeededOnly);
+  els.neededOnly.textContent = state.showNeededOnly ? "Show All" : "Needed Only";
+
+  const cards = ITEMS.map((item) => {
     const unitCost = adjustedUnitCost(item);
     const quantity = state.purchases[item.id];
     const target = targetUnits(item);
     const disabled = unitCost === 0;
     const required = isItemRequired(item);
+    const neededQuantity = target * state.childCount;
     const hiddenForEarlyCollege = item.id === "college-year" && state.years !== 18;
     const hiddenInactiveRequired = target === 0 && quantity === 0 && item.id !== "college-year";
+    const hiddenWhenCovered =
+      state.showNeededOnly && neededQuantity > 0 && quantity >= neededQuantity;
+    const hiddenWhenNotNeeded =
+      state.showNeededOnly && neededQuantity === 0 && quantity === 0;
 
-    if (hiddenForEarlyCollege || hiddenInactiveRequired) return "";
+    if (hiddenForEarlyCollege || hiddenInactiveRequired || hiddenWhenCovered || hiddenWhenNotNeeded) return "";
 
     return `
       <article class="item-card${required ? "" : " is-optional"}">
@@ -908,12 +927,24 @@ function renderItems() {
         </div>
         <div class="item-controls">
           <button type="button" data-sell="${item.id}" ${quantity === 0 ? "disabled" : ""}>Sell</button>
-          <span>${quantity}</span>
+          <input
+            type="number"
+            min="0"
+            max="9999"
+            inputmode="numeric"
+            value="${quantity}"
+            data-quantity="${item.id}"
+            aria-label="${item.name} quantity"
+          />
           <button type="button" data-buy="${item.id}" ${disabled ? "disabled" : ""}>Buy</button>
         </div>
       </article>
     `;
   }).join("");
+
+  els.itemGrid.innerHTML = cards.trim()
+    ? cards
+    : `<div class="shop-empty">Everything needed for this checkpoint is covered.</div>`;
 
   els.itemGrid.querySelectorAll("[data-buy]").forEach((button) => {
     button.addEventListener("click", () => {
@@ -926,6 +957,19 @@ function renderItems() {
     button.addEventListener("click", () => {
       const id = button.dataset.sell;
       setPurchase(id, state.purchases[id] - 1);
+    });
+  });
+
+  els.itemGrid.querySelectorAll("[data-quantity]").forEach((input) => {
+    input.addEventListener("change", () => {
+      const id = input.dataset.quantity;
+      setPurchase(id, Number.parseInt(input.value, 10) || 0);
+    });
+
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        input.blur();
+      }
     });
   });
 }
@@ -1028,6 +1072,11 @@ els.autoBuy.addEventListener("click", () => {
   requiredItems().forEach((item) => {
     state.purchases[item.id] = requiredQuantity(item);
   });
+  render();
+});
+
+els.neededOnly.addEventListener("click", () => {
+  state.showNeededOnly = !state.showNeededOnly;
   render();
 });
 

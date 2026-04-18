@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <g transform="rotate(-30 32 32)">
-    <path d="M10 33 38 17l16 9-28 16z" fill="#20d27b"/>
-    <path d="M10 39 38 23l16 9-28 16z" fill="#11b86d"/>
-    <path d="M10 45 38 29l16 9-28 16z" fill="#0b8f5a"/>
-    <path d="M21 35 38 25l6 3-17 10z" fill="#dfffea"/>
-    <circle cx="33" cy="32" r="3.6" fill="#ffffff"/>
+  <g transform="rotate(-29 32 32)">
+    <path d="M4 28 41 7l19 11-37 21z" fill="#28d983"/>
+    <path d="M4 36 41 15l19 11-37 21z" fill="#15bd72"/>
+    <path d="M4 44 41 23l19 11-37 21z" fill="#0c9b62"/>
+    <path d="M17 32 40 19l8 5-23 13z" fill="#e6fff0"/>
+    <circle cx="34" cy="29" r="4.2" fill="#ffffff"/>
   </g>
 </svg>
