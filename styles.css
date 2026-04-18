@@ -4,8 +4,8 @@
   --ink: #20242a;
   --muted: #5b626c;
   --line: #e1e4e8;
-  --green: #2ecc71;
-  --green-dark: #15944d;
+  --green: #29c77c;
+  --green-dark: #109766;
   --red: #f15b5b;
   --red-dark: #d63b3b;
   --yellow: #f4c542;
@@ -73,9 +73,8 @@ h1 {
 }
 
 .site-logo {
-  width: 42px;
-  height: 42px;
-  border-radius: 8px;
+  width: 46px;
+  height: 46px;
 }
 
 main {
@@ -128,8 +127,8 @@ main {
 
 .child-controls {
   display: grid;
-  grid-template-columns: 42px 42px;
-  gap: 8px;
+  grid-template-columns: 68px 68px;
+  gap: 10px;
 }
 
 .child-controls button,
@@ -139,6 +138,20 @@ main {
   background: #ffffff;
   color: var(--ink);
   font-weight: 800;
+}
+
+.child-controls button {
+  min-height: 58px;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+#addChild {
+  color: var(--green-dark);
+}
+
+#removeChild {
+  background: rgba(255, 255, 255, 0.84);
 }
 
 section {
@@ -161,7 +174,7 @@ section {
 
 .savings-dropdown summary {
   display: grid;
-  grid-template-columns: 1fr auto auto;
+  grid-template-columns: 1fr auto;
   align-items: center;
   min-height: 58px;
   padding: 0 18px;
@@ -175,34 +188,22 @@ section {
 }
 
 .savings-dropdown summary::after {
-  content: "+";
-  display: grid;
-  place-items: center;
-  width: 34px;
-  height: 34px;
+  content: "";
+  width: 14px;
+  height: 14px;
   margin-left: 14px;
-  background: var(--green);
-  color: #ffffff;
-  border-radius: 3px;
-  font-size: 1.45rem;
-  line-height: 1;
+  border-right: 4px solid var(--green-dark);
+  border-bottom: 4px solid var(--green-dark);
+  transform: rotate(45deg);
+  transition: transform 140ms ease;
 }
 
 .savings-dropdown[open] summary::after {
-  content: "-";
-  background: var(--red);
+  transform: rotate(225deg);
 }
 
 .savings-dropdown summary span {
   font-size: 1.35rem;
-  line-height: 1;
-}
-
-.savings-dropdown summary strong {
-  grid-column: 2;
-  margin-right: 48px;
-  color: var(--green-dark);
-  font-size: 0.9rem;
   line-height: 1;
 }
 
@@ -291,7 +292,7 @@ section {
 
 .year-track {
   display: grid;
-  grid-template-columns: repeat(18, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   align-content: center;
   gap: 4px;
   min-height: 140px;
@@ -300,7 +301,7 @@ section {
 
 .year-dot {
   min-width: 0;
-  height: 42px;
+  height: 58px;
   background: #eef0f3;
   color: var(--muted);
   font-size: 0.72rem;
@@ -441,6 +442,14 @@ section {
   color: var(--green-dark);
   font-size: 1.25rem;
   line-height: 1;
+  font-weight: 800;
+}
+
+.item-body small {
+  display: block;
+  margin-top: 7px;
+  color: var(--muted);
+  font-size: 0.78rem;
   font-weight: 800;
 }
 
@@ -642,7 +651,7 @@ section {
   }
 
   .year-track {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
   .shop-heading,
@@ -678,8 +687,8 @@ section {
   }
 
   .site-logo {
-    width: 38px;
-    height: 38px;
+    width: 40px;
+    height: 40px;
   }
 
   .ledger-main strong {

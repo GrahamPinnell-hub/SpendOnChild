@@ -146,6 +146,14 @@ const LIFE_EVENTS = [
   },
 ];
 
+const MILESTONES = [
+  { years: 1, label: "Age 1" },
+  { years: 5, label: "Age 5" },
+  { years: 10, label: "Age 10" },
+  { years: 14, label: "Age 14" },
+  { years: 18, label: "Age 18" },
+];
+
 const WIC_LIMITS = {
   1: 28953,
   2: 39128,
@@ -207,126 +215,148 @@ const SAVINGS = [
 
 const ITEMS = [
   {
-    id: "food",
-    name: "Food and formula",
+    id: "formula-can",
+    name: "Formula Can",
+    category: "Formula",
+    required: (years) => years <= 1,
+    photo: "https://cdn.pixabay.com/photo/2017/07/28/15/53/drinking-milk-2549021_1280.jpg",
+    price: 38,
+    target: (years) => (years <= 1 ? 36 : 0),
+    note: "One can at a time. Somehow they vanish.",
+  },
+  {
+    id: "grocery-week",
+    name: "Grocery Week",
     category: "Food",
     required: true,
-    colors: ["#20b15a", "#f5c84b"],
-    label: "Food",
     photo: "https://cdn.pixabay.com/photo/2017/07/28/15/53/drinking-milk-2549021_1280.jpg",
-    base: { 1: 1800, 5: 11400, 18: 58200 },
-    note: "Formula, baby food, groceries, snacks, and school-age food at home.",
+    price: 45,
+    target: (years) => years * 52,
+    note: "A child-sized weekly grocery add-on.",
   },
   {
-    id: "diapers",
-    name: "Diapers and wipes",
+    id: "diaper-box",
+    name: "Diaper Box",
     category: "Diapers",
     required: (years) => years <= 5,
-    colors: ["#40a7b8", "#ffffff"],
-    label: "Diapers",
     photo: "https://cdn.pixabay.com/photo/2012/03/01/00/23/baby-19534_640.jpg",
-    base: { 1: 936, 5: 2400, 18: 2400 },
-    note: "The early years are tiny, expensive, and somehow always sticky.",
+    price: 32,
+    target: (years) => (years <= 1 ? 30 : 88),
+    note: "A big box, briefly.",
   },
   {
-    id: "clothes",
-    name: "Clothes and shoes",
-    category: "Clothing",
+    id: "wipes-pack",
+    name: "Wipes Pack",
+    category: "Wipes",
+    required: (years) => years <= 5,
+    photo: "https://cdn.pixabay.com/photo/2012/03/01/00/23/baby-19534_640.jpg",
+    price: 7,
+    target: (years) => (years <= 1 ? 24 : 72),
+    note: "The official currency of sticky hands.",
+  },
+  {
+    id: "kid-outfit",
+    name: "Kid Outfit",
+    category: "Clothes",
     required: true,
-    colors: ["#e56f7a", "#f5c84b"],
-    label: "Clothes",
     photo: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Baby_shoes_%28Unsplash%29.jpg/960px-Baby_shoes_%28Unsplash%29.jpg",
-    base: { 1: 650, 5: 2650, 18: 11750 },
-    note: "Growth spurts, coats, shoes, school clothes, and replacements.",
+    price: 24,
+    target: (years) => years * 6,
+    note: "Growth spurts do not respect budgets.",
   },
   {
-    id: "health",
-    name: "Healthcare",
+    id: "shoes",
+    name: "Shoes",
+    category: "Shoes",
+    required: true,
+    photo: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Baby_shoes_%28Unsplash%29.jpg/960px-Baby_shoes_%28Unsplash%29.jpg",
+    price: 32,
+    target: (years) => Math.max(1, years * 2),
+    note: "Small shoes, recurring betrayal.",
+  },
+  {
+    id: "doctor-copay",
+    name: "Doctor Visit",
     category: "Health",
     required: true,
-    colors: ["#20b15a", "#ffffff"],
-    label: "Care",
     photo: "https://cdn.pixabay.com/photo/2018/06/09/17/13/doctor-3464763_1280.jpg",
-    base: { 1: 1200, 5: 3600, 18: 11400 },
-    note: "Checkups, medicine, dental basics, urgent visits, and insurance gaps.",
+    price: 45,
+    target: (years) => years * 3,
+    note: "Checkups, fevers, and the mystery rash era.",
   },
   {
-    id: "childcare",
-    name: "Child care",
+    id: "childcare-week",
+    name: "Daycare Week",
     category: "Care",
-    required: (years, persona) => persona.needsPaidCare,
-    colors: ["#40a7b8", "#f5c84b"],
-    label: "Care",
+    required: (years, persona) => persona.needsPaidCare && years <= 5,
     photo: "https://cdn.pixabay.com/photo/2020/04/09/08/06/kid-5020226_1280.jpg",
-    base: { 1: 10065, 5: 39165, 18: 72965 },
-    stayHomeBase: { 1: 1200, 5: 4800, 18: 9000 },
-    note: "Full-time care for working households, or limited respite care for stay-at-home mode.",
+    price: 195,
+    stayHomePrice: 35,
+    target: (years, persona) => {
+      if (!persona.needsPaidCare) return Math.min(years, 5) * 12;
+      return Math.min(years, 5) * 50;
+    },
+    note: "The line item that starts lifting weights.",
   },
   {
-    id: "housing",
-    name: "Housing space",
-    category: "Housing",
+    id: "car-seat",
+    name: "Car Seat",
+    category: "Safety",
     required: true,
-    colors: ["#1d241f", "#40a7b8"],
-    label: "Home",
-    photo: "https://cdn.pixabay.com/photo/2023/01/25/13/47/nursery-7743630_1280.jpg",
-    base: { 1: 3600, 5: 18000, 18: 64800 },
-    note: "Extra bedroom pressure, utilities, household supplies, and child-safe space.",
+    photo: "https://cdn.pixabay.com/photo/2022/08/10/04/18/mother-7376325_1280.jpg",
+    price: 120,
+    target: (years) => (years <= 1 ? 1 : 2),
+    note: "Non-negotiable, thankfully reusable.",
   },
   {
-    id: "transport",
-    name: "Transportation",
-    category: "Transport",
-    required: true,
-    colors: ["#f5c84b", "#1d241f"],
-    label: "Rides",
-    photo: "https://cdn.pixabay.com/photo/2019/04/02/16/08/baby-carriage-4098055_1280.jpg",
-    base: { 1: 800, 5: 4500, 18: 17100 },
-    note: "Car seats, more errands, school runs, gas, repairs, and activities.",
-  },
-  {
-    id: "school",
-    name: "School and activities",
+    id: "backpack",
+    name: "Backpack",
     category: "School",
     required: (years) => years >= 5,
-    colors: ["#40a7b8", "#ffffff"],
-    label: "School",
     photo: "https://cdn.pixabay.com/photo/2015/05/11/14/44/pencils-762555_1280.jpg",
-    base: { 1: 0, 5: 450, 18: 9000 },
-    note: "Supplies, fees, books, field trips, sports, clubs, and technology.",
+    price: 35,
+    target: (years) => (years < 5 ? 0 : Math.ceil((years - 4) / 3)),
+    note: "One zipper away from chaos.",
   },
   {
-    id: "safety",
-    name: "Safety gear",
-    category: "Gear",
-    required: true,
-    colors: ["#e56f7a", "#ffffff"],
-    label: "Gear",
-    photo: "https://cdn.pixabay.com/photo/2022/08/10/04/18/mother-7376325_1280.jpg",
-    base: { 1: 850, 5: 1200, 18: 1200 },
-    note: "Car seat, crib, stroller, babyproofing, and gear that gets outgrown fast.",
+    id: "school-pack",
+    name: "School Pack",
+    category: "Supplies",
+    required: (years) => years >= 5,
+    photo: "https://cdn.pixabay.com/photo/2015/05/11/14/44/pencils-762555_1280.jpg",
+    price: 28,
+    target: (years) => Math.max(0, years - 4),
+    note: "Pencils, folders, glue, repeat.",
   },
   {
-    id: "emergency",
-    name: "Emergency buffer",
+    id: "activity-fee",
+    name: "Activity Fee",
+    category: "Activities",
+    required: (years) => years >= 5,
+    photo: "https://cdn.pixabay.com/photo/2015/05/11/14/44/pencils-762555_1280.jpg",
+    price: 75,
+    target: (years) => Math.max(0, years - 4),
+    note: "Sports, clubs, trips, and snacks.",
+  },
+  {
+    id: "emergency-100",
+    name: "Emergency $100",
     category: "Buffer",
     required: true,
-    colors: ["#20b15a", "#1d241f"],
-    label: "Buffer",
     photo: "https://cdn.pixabay.com/photo/2021/02/17/17/22/savings-6024919_1280.jpg",
-    base: { 1: 1000, 5: 5000, 18: 18000 },
-    note: "The boring money that saves you when tires, fevers, and job chaos show up.",
+    price: 100,
+    target: (years) => years * 10,
+    note: "Tires, fevers, and bad timing.",
   },
   {
-    id: "college",
-    name: "College fund",
+    id: "college-year",
+    name: "College Year",
     category: "College",
     required: false,
-    colors: ["#f5c84b", "#e56f7a"],
-    label: "College",
     photo: "https://cdn.pixabay.com/photo/2013/01/20/04/53/college-75535_1280.jpg",
-    base: { 1: 0, 5: 0, 18: 39240 },
-    note: "Optional at age 18. Public four-year tuition and fees, multiplied by four years. Pain, but itemized.",
+    price: 9810,
+    target: (years) => (years >= 18 ? 4 : 0),
+    note: "Optional. Emotionally spicy.",
   },
 ];
 
@@ -392,7 +422,6 @@ const els = {
   prevYear: document.querySelector("#prevYear"),
   nextYear: document.querySelector("#nextYear"),
   savingsGrid: document.querySelector("#savingsGrid"),
-  savingsSummary: document.querySelector("#savingsSummary"),
   remainingMoney: document.querySelector("#remainingMoney"),
   childCount: document.querySelector("#childCount"),
   coveredCount: document.querySelector("#coveredCount"),
@@ -420,21 +449,6 @@ function stageName(year) {
   if (year <= 14) return "Middle years";
   if (year <= 17) return "Teen years";
   return "Age 18";
-}
-
-function cumulativeCost(base, year) {
-  if (year <= 1) return base[1] || 0;
-  if (year >= 18) return base[18] || 0;
-
-  if (year <= 5) {
-    const start = base[1] || 0;
-    const end = base[5] ?? start;
-    return start + ((end - start) * (year - 1)) / 4;
-  }
-
-  const start = base[5] ?? base[1] ?? 0;
-  const end = base[18] ?? start;
-  return start + ((end - start) * (year - 5)) / 13;
 }
 
 function eventApplies(event) {
@@ -487,52 +501,49 @@ function isItemRequired(item) {
     : item.required;
 }
 
-function baseCost(item) {
-  if (item.id === "college") {
-    return state.years >= 18 ? item.base[18] : 0;
-  }
-
-  if (item.id === "school" && state.years < 5) {
-    return 0;
-  }
-
-  if (item.id === "childcare" && !getPersona().needsPaidCare) {
-    return cumulativeCost(item.stayHomeBase, state.years);
-  }
-
-  return cumulativeCost(item.base, state.years);
+function targetUnits(item) {
+  if (typeof item.target !== "function") return 1;
+  return Math.max(0, Math.ceil(item.target(state.years, getPersona())));
 }
 
-function firstFiveFoodCost() {
-  const food = ITEMS.find((item) => item.id === "food");
-  return cumulativeCost(food.base, Math.min(state.years, 5));
+function requiredQuantity(item) {
+  return targetUnits(item) * state.childCount;
+}
+
+function baseCost(item) {
+  if (item.id === "childcare-week" && !getPersona().needsPaidCare) {
+    return item.stayHomePrice;
+  }
+
+  return item.price;
 }
 
 function adjustedUnitCost(item) {
   let cost = baseCost(item);
 
-  if (item.id === "food" && state.savings.has("wic") && isWicEligible()) {
-    cost -= Math.min(cost, firstFiveFoodCost()) * 0.35;
+  if (["formula-can", "grocery-week"].includes(item.id) && state.savings.has("wic") && isWicEligible()) {
+    cost *= 0.65;
   }
 
-  if (state.savings.has("costco") && ["food", "diapers", "safety"].includes(item.id)) {
+  if (state.savings.has("costco") && ["grocery-week", "diaper-box", "wipes-pack"].includes(item.id)) {
     cost *= 0.92;
   }
 
   if (state.savings.has("handMeDowns")) {
-    if (item.id === "clothes") cost *= 0.6;
-    if (item.id === "safety") cost *= 0.75;
-    if (item.id === "school") cost *= 0.9;
+    if (["kid-outfit", "shoes"].includes(item.id)) cost *= 0.6;
+    if (item.id === "car-seat") cost *= 0.75;
+    if (item.id === "backpack") cost *= 0.75;
   }
 
-  if (item.id === "childcare" && getPersona().needsPaidCare) {
+  if (item.id === "childcare-week" && getPersona().needsPaidCare) {
     if (state.savings.has("homeCare")) cost *= 0.865;
 
     if (state.savings.has("dhsCare") && isDhsEligible()) {
       const copay = dhsMonthlyCopay();
       if (copay !== null) {
         const householdCopay = copay * 12 * state.years;
-        cost = Math.min(cost, householdCopay / Math.max(1, state.childCount));
+        const careWeeks = Math.max(1, targetUnits(item) * state.childCount);
+        cost = Math.min(cost, householdCopay / careWeeks);
       }
     }
   }
@@ -564,13 +575,16 @@ function remainingTotal() {
 }
 
 function requiredItems() {
-  return ITEMS.filter(isItemRequired);
+  return ITEMS.filter((item) => isItemRequired(item) && targetUnits(item) > 0);
 }
 
 function essentialsCovered() {
   const required = requiredItems();
   if (required.length === 0) return state.childCount;
-  return Math.min(...required.map((item) => state.purchases[item.id]), state.childCount);
+  return Math.min(
+    ...required.map((item) => Math.floor(state.purchases[item.id] / targetUnits(item))),
+    state.childCount,
+  );
 }
 
 function fullyCovered() {
@@ -606,20 +620,21 @@ function renderYearRun() {
   const event = LIFE_EVENTS.find((item) => item.year === state.years);
   const impact = event && eventApplies(event) ? event.amount * state.childCount : 0;
   const impactText = impact === 0 ? "No budget hit" : `${impact > 0 ? "+" : ""}${money.format(impact)}`;
+  const milestoneIndex = MILESTONES.findIndex((milestone) => milestone.years === state.years);
 
   els.yearNumber.textContent = String(state.years);
   els.yearStage.textContent = stageName(state.years);
-  els.prevYear.disabled = state.years === 1;
-  els.nextYear.disabled = state.years === 18;
-  els.nextYear.textContent = state.years === 18 ? "Finished" : "Next Year";
+  els.prevYear.disabled = milestoneIndex <= 0;
+  els.nextYear.disabled = milestoneIndex === MILESTONES.length - 1;
+  els.nextYear.textContent = state.years === 18 ? "Finished" : "Next";
 
-  els.yearTrack.innerHTML = Array.from({ length: 18 }, (_, index) => {
-    const year = index + 1;
+  els.yearTrack.innerHTML = MILESTONES.map((milestone) => {
+    const year = milestone.years;
     const status = year === state.years ? " is-current" : year < state.years ? " is-past" : "";
 
     return `
       <button class="year-dot${status}" type="button" data-year="${year}" aria-label="Jump to age ${year}">
-        ${year}
+        ${milestone.label}
       </button>
     `;
   }).join("");
@@ -632,7 +647,7 @@ function renderYearRun() {
   });
 
   els.lifeEvent.innerHTML = `
-    <span>This year</span>
+    <span>At this point</span>
     <strong>${event.title}</strong>
     <p>${event.note}</p>
     <p>${impactText}</p>
@@ -640,9 +655,6 @@ function renderYearRun() {
 }
 
 function renderSavings() {
-  const selected = state.savings.size;
-  els.savingsSummary.textContent = selected === 1 ? "1 on" : `${selected} on`;
-
   els.savingsGrid.innerHTML = SAVINGS.map((saving) => {
     const active = state.savings.has(saving.id) ? " is-active" : "";
     let status = "";
@@ -690,8 +702,9 @@ function renderLedger() {
 
 function renderMeters() {
   const rows = requiredItems().map((item) => {
-    const count = Math.min(state.purchases[item.id], state.childCount);
-    const percent = state.childCount === 0 ? 100 : Math.round((count / state.childCount) * 100);
+    const needed = requiredQuantity(item);
+    const count = Math.min(state.purchases[item.id], needed);
+    const percent = needed === 0 ? 100 : Math.round((count / needed) * 100);
     const status = percent < 50 ? " is-danger" : percent < 100 ? " is-warning" : "";
 
     return `
@@ -700,7 +713,7 @@ function renderMeters() {
         <div class="meter-track" aria-label="${item.category} coverage">
           <div class="meter-fill" style="--fill: ${percent}%"></div>
         </div>
-        <div class="meter-value">${count}/${state.childCount}</div>
+        <div class="meter-value">${count}/${needed}</div>
       </div>
     `;
   });
@@ -711,7 +724,8 @@ function renderMeters() {
 function renderVerdict() {
   const covered = fullyCovered();
   const remaining = remainingTotal();
-  const college = state.years === 18 && state.purchases.college >= state.childCount;
+  const collegeTarget = ITEMS.find((item) => item.id === "college-year");
+  const college = state.years === 18 && state.purchases["college-year"] >= targetUnits(collegeTarget) * state.childCount;
   let title = "Try again";
   let body = "The cart is missing essentials, or the household is underwater before the checkpoint.";
 
@@ -741,11 +755,12 @@ function renderItems() {
   els.itemGrid.innerHTML = ITEMS.map((item) => {
     const unitCost = adjustedUnitCost(item);
     const quantity = state.purchases[item.id];
-    const disabled = unitCost === 0 && item.id !== "school";
-    const hiddenForEarlyCollege = item.id === "college" && state.years !== 18;
-    const hiddenEmptySchool = item.id === "school" && state.years < 5;
+    const target = targetUnits(item);
+    const disabled = unitCost === 0;
+    const hiddenForEarlyCollege = item.id === "college-year" && state.years !== 18;
+    const hiddenInactiveRequired = target === 0 && quantity === 0 && item.id !== "college-year";
 
-    if (hiddenForEarlyCollege || hiddenEmptySchool) return "";
+    if (hiddenForEarlyCollege || hiddenInactiveRequired) return "";
 
     return `
       <article class="item-card">
@@ -755,6 +770,7 @@ function renderItems() {
         <div class="item-body">
           <h3>${item.name}</h3>
           <span class="item-price">${money.format(unitCost)}</span>
+          ${target > 0 ? `<small>Need ${target * state.childCount}</small>` : ""}
         </div>
         <div class="item-controls">
           <button type="button" data-sell="${item.id}" ${quantity === 0 ? "disabled" : ""}>Sell</button>
@@ -782,7 +798,7 @@ function renderItems() {
 
 function renderReceipt() {
   const purchasedRows = ITEMS
-    .filter((item) => state.purchases[item.id] > 0 && !(item.id === "college" && state.years !== 18))
+    .filter((item) => state.purchases[item.id] > 0 && !(item.id === "college-year" && state.years !== 18))
     .map((item) => {
       return `
         <div class="receipt-row">
@@ -863,18 +879,20 @@ els.removeChild.addEventListener("click", () => {
 });
 
 els.nextYear.addEventListener("click", () => {
-  state.years = Math.min(18, state.years + 1);
+  const index = MILESTONES.findIndex((milestone) => milestone.years === state.years);
+  state.years = MILESTONES[Math.min(MILESTONES.length - 1, index + 1)].years;
   render();
 });
 
 els.prevYear.addEventListener("click", () => {
-  state.years = Math.max(1, state.years - 1);
+  const index = MILESTONES.findIndex((milestone) => milestone.years === state.years);
+  state.years = MILESTONES[Math.max(0, index - 1)].years;
   render();
 });
 
 els.autoBuy.addEventListener("click", () => {
   requiredItems().forEach((item) => {
-    state.purchases[item.id] = state.childCount;
+    state.purchases[item.id] = requiredQuantity(item);
   });
   render();
 });
