@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Spend On Child</title>
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
@@ -53,10 +54,13 @@
       </section>
 
       <section class="savings-section" aria-label="Savings options">
-        <div class="section-heading">
-          <h2>Savings</h2>
-        </div>
-        <div class="savings-grid" id="savingsGrid"></div>
+        <details class="savings-dropdown">
+          <summary>
+            <span>Savings</span>
+            <strong id="savingsSummary">1 on</strong>
+          </summary>
+          <div class="savings-grid" id="savingsGrid"></div>
+        </details>
       </section>
 
       <section class="shop-section" aria-label="Baby and child costs">

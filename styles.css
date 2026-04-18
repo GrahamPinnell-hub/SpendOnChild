@@ -140,6 +140,57 @@ section {
   background: transparent;
 }
 
+.savings-dropdown {
+  background: var(--paper);
+}
+
+.savings-dropdown summary {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  min-height: 58px;
+  padding: 0 18px;
+  list-style: none;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.savings-dropdown summary::-webkit-details-marker {
+  display: none;
+}
+
+.savings-dropdown summary::after {
+  content: "+";
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  margin-left: 14px;
+  background: var(--green);
+  color: #ffffff;
+  border-radius: 3px;
+  font-size: 1.45rem;
+  line-height: 1;
+}
+
+.savings-dropdown[open] summary::after {
+  content: "-";
+  background: var(--red);
+}
+
+.savings-dropdown summary span {
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.savings-dropdown summary strong {
+  grid-column: 2;
+  margin-right: 48px;
+  color: var(--green-dark);
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
 .section-heading,
 .shop-heading {
   display: flex;
@@ -164,6 +215,10 @@ section {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
+}
+
+.savings-grid {
+  padding: 0 18px 18px;
 }
 
 .persona-card,

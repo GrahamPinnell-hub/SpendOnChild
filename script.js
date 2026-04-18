@@ -290,6 +290,7 @@ const els = {
   personaGrid: document.querySelector("#personaGrid"),
   checkpointGrid: document.querySelector("#checkpointGrid"),
   savingsGrid: document.querySelector("#savingsGrid"),
+  savingsSummary: document.querySelector("#savingsSummary"),
   remainingMoney: document.querySelector("#remainingMoney"),
   childCount: document.querySelector("#childCount"),
   coveredCount: document.querySelector("#coveredCount"),
@@ -479,6 +480,9 @@ function totalBudgetForYears(years) {
 }
 
 function renderSavings() {
+  const selected = state.savings.size;
+  els.savingsSummary.textContent = selected === 1 ? "1 on" : `${selected} on`;
+
   els.savingsGrid.innerHTML = SAVINGS.map((saving) => {
     const active = state.savings.has(saving.id) ? " is-active" : "";
     let status = "";
