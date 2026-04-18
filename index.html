@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Spend On Child</title>
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg?v=5" />
-    <link rel="stylesheet" href="./styles.css?v=5" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg?v=6" />
+    <link rel="stylesheet" href="./styles.css?v=6" />
   </head>
   <body>
     <header class="masthead">
@@ -16,7 +16,7 @@
       />
       <div class="masthead__content">
         <div class="title-lockup">
-          <img class="site-logo" src="./favicon.svg" alt="" />
+          <img class="site-logo" src="./favicon.svg?v=6" alt="" />
           <h1>Spend On Child</h1>
         </div>
       </div>
@@ -24,20 +24,20 @@
 
     <section class="sticky-ledger" aria-live="polite">
       <div class="ledger-main">
-        <span class="ledger-label">Money left</span>
+        <span class="ledger-label" id="ledgerHousehold">Household</span>
         <strong id="remainingMoney">$0</strong>
-      </div>
-      <div>
-        <span class="ledger-label">Children</span>
-        <strong id="childCount">1</strong>
       </div>
       <div>
         <span class="ledger-label">Covered</span>
         <strong id="coveredCount">0</strong>
       </div>
-      <div class="child-controls">
-        <button type="button" id="removeChild" aria-label="Try raising fewer children">-</button>
-        <button type="button" id="addChild" aria-label="Try raising more children">+</button>
+      <div class="children-panel">
+        <span class="ledger-label">Children</span>
+        <div class="child-controls">
+          <button type="button" id="removeChild" aria-label="Try raising fewer children">-</button>
+          <strong id="childCount">1</strong>
+          <button type="button" id="addChild" aria-label="Try raising more children">+</button>
+        </div>
       </div>
     </section>
 
@@ -115,6 +115,6 @@
       </section>
     </main>
 
-    <script src="./script.js?v=5"></script>
+    <script src="./script.js?v=6"></script>
   </body>
 </html>

@@ -1,3 +1,11 @@
+@font-face {
+  font-family: "SpendRoboto";
+  src: url("./Roboto-Bold.a65527f.woff2") format("woff2");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --bg: #f1f2f6;
   --paper: #ffffff;
@@ -9,7 +17,7 @@
   --red: #f15b5b;
   --red-dark: #d63b3b;
   --yellow: #f4c542;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "SpendRoboto", Arial, Helvetica, sans-serif;
 }
 
 * {
@@ -27,6 +35,7 @@ button {
   border-radius: 3px;
   font: inherit;
   cursor: pointer;
+  font-family: inherit;
 }
 
 button:disabled {
@@ -89,7 +98,7 @@ main {
   width: min(1250px, calc(100% - 76px));
   margin: 0 auto 12px;
   display: grid;
-  grid-template-columns: 1fr auto auto auto;
+  grid-template-columns: 1fr auto auto;
   align-items: center;
   gap: 22px;
   min-height: 98px;
@@ -105,6 +114,38 @@ main {
 
 .ledger-main strong {
   font-size: 2.35rem;
+}
+
+.ledger-main {
+  position: relative;
+}
+
+.money-delta {
+  position: absolute;
+  left: 50%;
+  bottom: -24px;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 1rem;
+  line-height: 1;
+  opacity: 0;
+  animation: money-pop 520ms ease-out;
+}
+
+@keyframes money-pop {
+  0% {
+    transform: translate(-50%, 6px);
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(-50%, -20px);
+    opacity: 0;
+  }
 }
 
 .ledger-label {
@@ -127,7 +168,8 @@ main {
 
 .child-controls {
   display: grid;
-  grid-template-columns: 68px 68px;
+  grid-template-columns: 68px 78px 68px;
+  align-items: center;
   gap: 10px;
 }
 
@@ -146,8 +188,36 @@ main {
   line-height: 1;
 }
 
+.child-controls strong {
+  display: grid;
+  place-items: center;
+  min-height: 58px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 2px solid rgba(255, 255, 255, 0.34);
+  border-radius: 3px;
+  color: #ffffff;
+  font-size: 2rem;
+}
+
+.children-panel {
+  min-width: 236px;
+}
+
 #addChild {
+  position: relative;
+  min-height: 64px;
+  background: #ffffff;
   color: var(--green-dark);
+  box-shadow: inset 0 0 0 3px rgba(16, 151, 102, 0.28), 0 5px 0 rgba(0, 0, 0, 0.12);
+}
+
+#addChild::after {
+  content: "Add";
+  display: block;
+  margin-top: 3px;
+  font-size: 0.62rem;
+  line-height: 1;
+  text-transform: uppercase;
 }
 
 #removeChild {
@@ -439,6 +509,10 @@ section {
   text-align: center;
 }
 
+.item-card.is-optional {
+  box-shadow: inset 0 0 0 2px #e4e8ed;
+}
+
 .item-art {
   display: grid;
   place-items: center;
@@ -479,6 +553,10 @@ section {
   color: var(--muted);
   font-size: 0.78rem;
   font-weight: 800;
+}
+
+.item-body small.optional-note {
+  color: var(--green-dark);
 }
 
 .item-controls {
@@ -656,7 +734,7 @@ section {
   }
 
   .sticky-ledger {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     padding: 16px;
   }
 
@@ -665,7 +743,7 @@ section {
   }
 
   .child-controls {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1.1fr 1fr;
   }
 
   .persona-grid,

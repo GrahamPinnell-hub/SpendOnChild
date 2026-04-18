@@ -133,7 +133,7 @@ const ITEMS = [
     name: "Grocery Week",
     category: "Food",
     required: (years) => years > 1,
-    photo: "https://cdn.pixabay.com/photo/2017/07/28/15/53/drinking-milk-2549021_1280.jpg",
+    photo: "https://cdn.pixabay.com/photo/2017/06/02/18/24/fruit-2367029_1280.jpg",
     price: 45,
     target: (years) => (years <= 1 ? 0 : years * 52),
     note: "A child-sized weekly grocery add-on.",
@@ -153,7 +153,7 @@ const ITEMS = [
     name: "Wipes Pack",
     category: "Wipes",
     required: (years) => years <= 5,
-    photo: "https://cdn.pixabay.com/photo/2012/03/01/00/23/baby-19534_640.jpg",
+    photo: "https://cdn.pixabay.com/photo/2020/11/16/17/30/baby-stuff-5749668_640.jpg",
     price: 7,
     target: (years) => (years <= 1 ? 24 : 72),
     note: "The official currency of sticky hands.",
@@ -182,18 +182,18 @@ const ITEMS = [
     id: "doctor-copay",
     name: "Doctor Visit",
     category: "Health",
-    required: true,
-    photo: "https://cdn.pixabay.com/photo/2018/06/09/17/13/doctor-3464763_1280.jpg",
+    required: false,
+    photo: "https://cdn.pixabay.com/photo/2017/05/15/23/47/stethoscope-icon-2316460_1280.png",
     price: 45,
-    target: (years) => years * 3,
-    note: "Checkups, fevers, and the mystery rash era.",
+    target: () => 3,
+    note: "Optional, but skipping it makes illness more expensive if you miss it early.",
   },
   {
     id: "baby-bottles",
     name: "Bottle Set",
     category: "Bottles",
     required: (years) => years <= 1,
-    photo: "https://cdn.pixabay.com/photo/2017/07/28/15/53/drinking-milk-2549021_1280.jpg",
+    photo: "https://cdn.pixabay.com/photo/2012/04/12/18/57/baby-30177_1280.png",
     price: 22,
     target: (years) => (years <= 1 ? 3 : 0),
     note: "Bottles, nipples, and the drawer they take over.",
@@ -203,7 +203,7 @@ const ITEMS = [
     name: "Pacifier Pack",
     category: "Pacifiers",
     required: (years) => years <= 1,
-    photo: "https://cdn.pixabay.com/photo/2023/07/04/09/36/baby-8105822_1280.jpg",
+    photo: "https://cdn.pixabay.com/photo/2022/10/20/20/41/pacifier-7535751_640.jpg",
     price: 9,
     target: (years) => (years <= 1 ? 4 : 0),
     note: "Several will disappear into another dimension.",
@@ -213,7 +213,7 @@ const ITEMS = [
     name: "Crib",
     category: "Sleep",
     required: (years) => years <= 5,
-    photo: "https://cdn.pixabay.com/photo/2023/01/25/13/47/nursery-7743630_1280.jpg",
+    photo: "https://cdn.pixabay.com/photo/2015/08/16/04/03/crib-890565_1280.jpg",
     price: 240,
     target: (years) => (years <= 5 ? 1 : 0),
     note: "The first real furniture hit.",
@@ -223,7 +223,7 @@ const ITEMS = [
     name: "Crib Mattress",
     category: "Sleep",
     required: (years) => years <= 5,
-    photo: "https://cdn.pixabay.com/photo/2023/01/25/13/47/nursery-7743630_1280.jpg",
+    photo: "https://cdn.pixabay.com/photo/2015/12/05/23/38/nursery-1078923_1280.jpg",
     price: 95,
     target: (years) => (years <= 5 ? 1 : 0),
     note: "A separate price tag, because of course.",
@@ -293,31 +293,21 @@ const ITEMS = [
     note: "Tub, washcloths, soap, and slippery panic.",
   },
   {
-    id: "thermometer",
-    name: "Thermometer",
-    category: "Health",
-    required: true,
-    photo: "https://cdn.pixabay.com/photo/2018/06/09/17/13/doctor-3464763_1280.jpg",
-    price: 18,
-    target: () => 1,
-    note: "Tiny tool, large parental anxiety reduction.",
-  },
-  {
-    id: "medicine-kit",
-    name: "Medicine Kit",
+    id: "care-supplies",
+    name: "Care Supplies",
     category: "Health",
     required: (years) => years <= 5,
-    photo: "https://cdn.pixabay.com/photo/2018/06/09/17/13/doctor-3464763_1280.jpg",
-    price: 32,
+    photo: "https://cdn.pixabay.com/photo/2015/08/26/15/07/first-aid-908591_1280.jpg",
+    price: 50,
     target: (years) => (years <= 1 ? 1 : 2),
-    note: "Saline, fever reducer, and midnight confidence.",
+    note: "Thermometer, fever reducer, saline, and midnight confidence.",
   },
   {
     id: "backpack",
     name: "Backpack",
     category: "School",
     required: (years) => years >= 5,
-    photo: "https://cdn.pixabay.com/photo/2015/05/11/14/44/pencils-762555_1280.jpg",
+    photo: "https://cdn.pixabay.com/photo/2023/05/30/16/42/backpack-8029117_1280.png",
     price: 35,
     target: (years) => (years < 5 ? 0 : Math.ceil((years - 4) / 3)),
     note: "One zipper away from chaos.",
@@ -327,7 +317,7 @@ const ITEMS = [
     name: "School Pack",
     category: "Supplies",
     required: (years) => years >= 5,
-    photo: "https://cdn.pixabay.com/photo/2015/05/11/14/44/pencils-762555_1280.jpg",
+    photo: "https://cdn.pixabay.com/photo/2020/05/15/18/39/school-supplies-5174645_1280.png",
     price: 28,
     target: (years) => Math.max(0, years - 4),
     note: "Pencils, folders, glue, repeat.",
@@ -337,7 +327,7 @@ const ITEMS = [
     name: "Activity Fee",
     category: "Activities",
     required: (years) => years >= 5,
-    photo: "https://cdn.pixabay.com/photo/2015/05/11/14/44/pencils-762555_1280.jpg",
+    photo: "https://cdn.pixabay.com/photo/2022/08/17/15/45/soccer-7392832_1280.jpg",
     price: 75,
     target: (years) => Math.max(0, years - 4),
     note: "Sports, clubs, trips, and snacks.",
@@ -427,6 +417,7 @@ const els = {
   prevYear: document.querySelector("#prevYear"),
   nextYear: document.querySelector("#nextYear"),
   savingsGrid: document.querySelector("#savingsGrid"),
+  ledgerHousehold: document.querySelector("#ledgerHousehold"),
   remainingMoney: document.querySelector("#remainingMoney"),
   childCount: document.querySelector("#childCount"),
   coveredCount: document.querySelector("#coveredCount"),
@@ -442,6 +433,9 @@ const els = {
   sourceList: document.querySelector("#sourceList"),
   stickyLedger: document.querySelector(".sticky-ledger"),
 };
+
+let displayedRemaining = null;
+let moneyAnimationFrame = null;
 
 function getPersona() {
   return PERSONAS.find((persona) => persona.id === state.personaId);
@@ -484,8 +478,8 @@ function boughtRatio(itemId) {
 
 function healthEvent() {
   const doctorRatio = boughtRatio("doctor-copay");
-  const medicineRatio = boughtRatio("medicine-kit");
-  const earlyCare = Math.max(doctorRatio, medicineRatio * 0.5);
+  const suppliesRatio = boughtRatio("care-supplies");
+  const earlyCare = Math.max(doctorRatio, suppliesRatio * 0.5);
   const baseChance = state.years === 1 ? 0.48 : state.years === 5 ? 0.32 : 0.2;
   const chance = Math.max(0.08, baseChance - earlyCare * 0.28);
   const roll = seededRandom(state.riskSeed + state.years * 37 + state.childCount * 101);
@@ -786,10 +780,57 @@ function renderSavings() {
 
 function renderLedger() {
   const remaining = remainingTotal();
-  els.remainingMoney.textContent = money.format(remaining);
+  const previous = displayedRemaining;
+
+  els.ledgerHousehold.textContent = getPersona().name;
   els.childCount.textContent = String(state.childCount);
   els.coveredCount.textContent = String(fullyCovered());
   els.stickyLedger.classList.toggle("is-danger", remaining < 0);
+
+  if (displayedRemaining === null) {
+    displayedRemaining = remaining;
+    els.remainingMoney.textContent = money.format(remaining);
+    return;
+  }
+
+  animateMoney(previous, remaining);
+  showMoneyDelta(remaining - previous);
+}
+
+function animateMoney(fromValue, toValue) {
+  if (moneyAnimationFrame) cancelAnimationFrame(moneyAnimationFrame);
+
+  const start = performance.now();
+  const duration = 360;
+
+  function tick(now) {
+    const progress = Math.min(1, (now - start) / duration);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const nextValue = Math.round(fromValue + (toValue - fromValue) * eased);
+
+    displayedRemaining = nextValue;
+    els.remainingMoney.textContent = money.format(nextValue);
+
+    if (progress < 1) {
+      moneyAnimationFrame = requestAnimationFrame(tick);
+    } else {
+      displayedRemaining = toValue;
+      els.remainingMoney.textContent = money.format(toValue);
+      moneyAnimationFrame = null;
+    }
+  }
+
+  moneyAnimationFrame = requestAnimationFrame(tick);
+}
+
+function showMoneyDelta(delta) {
+  if (delta === 0) return;
+
+  const bubble = document.createElement("span");
+  bubble.className = "money-delta";
+  bubble.textContent = `${delta < 0 ? "-" : "+"}${money.format(Math.abs(delta))}`;
+  els.remainingMoney.parentElement.appendChild(bubble);
+  bubble.addEventListener("animationend", () => bubble.remove(), { once: true });
 }
 
 function renderMeters() {
@@ -849,20 +890,21 @@ function renderItems() {
     const quantity = state.purchases[item.id];
     const target = targetUnits(item);
     const disabled = unitCost === 0;
+    const required = isItemRequired(item);
     const hiddenForEarlyCollege = item.id === "college-year" && state.years !== 18;
     const hiddenInactiveRequired = target === 0 && quantity === 0 && item.id !== "college-year";
 
     if (hiddenForEarlyCollege || hiddenInactiveRequired) return "";
 
     return `
-      <article class="item-card">
+      <article class="item-card${required ? "" : " is-optional"}">
         <div class="item-art">
           <img src="${item.photo}" alt="${item.name}" />
         </div>
         <div class="item-body">
           <h3>${item.name}</h3>
           <span class="item-price">${money.format(unitCost)}</span>
-          ${target > 0 ? `<small>Need ${target * state.childCount}</small>` : ""}
+          ${target > 0 ? `<small class="${required ? "" : "optional-note"}">${required ? "Need" : "Optional need"} ${target * state.childCount}</small>` : ""}
         </div>
         <div class="item-controls">
           <button type="button" data-sell="${item.id}" ${quantity === 0 ? "disabled" : ""}>Sell</button>
