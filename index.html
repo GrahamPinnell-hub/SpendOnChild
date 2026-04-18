@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spend On Child</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="masthead">
+      <div class="masthead__media" aria-hidden="true">
+        <img
+          src="https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&w=1400&q=80"
+          alt=""
+        />
+      </div>
+      <div class="masthead__content">
+        <p class="eyebrow">Oklahoma family budget simulator</p>
+        <h1>Spend On Child</h1>
+        <p>
+          Pick a mom profile, stack every discount you can find, then see how
+          many children you can fully cover through age 1, 5, and 18.
+        </p>
+      </div>
+    </header>
+
+    <main>
+      <section class="control-band" aria-label="Scenario controls">
+        <div class="section-heading">
+          <p class="eyebrow">Choose the household</p>
+          <h2>What kind of budget are we testing?</h2>
+        </div>
+        <div class="persona-grid" id="personaGrid"></div>
+      </section>
+
+      <section class="control-band checkpoint-band" aria-label="Checkpoint controls">
+        <div class="section-heading">
+          <p class="eyebrow">Checkpoint</p>
+          <h2>How long are you trying to make it work?</h2>
+        </div>
+        <div class="checkpoint-grid" id="checkpointGrid"></div>
+      </section>
+
+      <section class="sticky-ledger" aria-live="polite">
+        <div>
+          <span class="ledger-label">Money left</span>
+          <strong id="remainingMoney">$0</strong>
+        </div>
+        <div>
+          <span class="ledger-label">Children attempted</span>
+          <strong id="childCount">1</strong>
+        </div>
+        <div>
+          <span class="ledger-label">Fully covered</span>
+          <strong id="coveredCount">0</strong>
+        </div>
+        <div class="child-controls">
+          <button type="button" id="removeChild" aria-label="Try raising fewer children">-</button>
+          <button type="button" id="addChild" aria-label="Try raising more children">+</button>
+        </div>
+      </section>
+
+      <section class="savings-section" aria-label="Savings options">
+        <div class="section-heading">
+          <p class="eyebrow">Savings moves</p>
+          <h2>Use the help families actually look for.</h2>
+        </div>
+        <div class="savings-grid" id="savingsGrid"></div>
+      </section>
+
+      <section class="progress-section" aria-label="Progress report">
+        <div class="section-heading">
+          <p class="eyebrow">Progress check</p>
+          <h2 id="progressTitle">Can this household make it?</h2>
+        </div>
+        <div class="progress-layout">
+          <div class="meter-list" id="meterList"></div>
+          <div class="verdict" id="verdict"></div>
+        </div>
+      </section>
+
+      <section class="shop-section" aria-label="Baby and child costs">
+        <div class="shop-heading">
+          <div>
+            <p class="eyebrow">Budget shop</p>
+            <h2>Buy one coverage unit per child.</h2>
+          </div>
+          <div class="shop-actions">
+            <button type="button" id="autoBuy">Cover current children</button>
+            <button type="button" id="resetGame">Reset cart</button>
+          </div>
+        </div>
+        <div class="item-grid" id="itemGrid"></div>
+      </section>
+
+      <section class="receipt-section" aria-label="Receipt">
+        <div class="section-heading">
+          <p class="eyebrow">Receipt</p>
+          <h2>Where the money went.</h2>
+        </div>
+        <div class="receipt" id="receipt"></div>
+      </section>
+
+      <section class="sources-section" aria-label="Sources and assumptions">
+        <div class="section-heading">
+          <p class="eyebrow">Starter data</p>
+          <h2>Swap these when you send your Oklahoma stats.</h2>
+        </div>
+        <div class="source-list" id="sourceList"></div>
+      </section>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
