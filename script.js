@@ -34,109 +34,15 @@ const PERSONAS = [
 const LIFE_EVENTS = [
   {
     year: 1,
-    title: "Baby math arrives",
-    note: "First-year gear and infant care hit before anyone sleeps.",
+    title: "Baby year",
+    note: "Gear, diapers, safety, appointments, and sleep-deprived math.",
     amount: 0,
-  },
-  {
-    year: 2,
-    title: "Diaper phase keeps going",
-    note: "Wipes, backup clothes, and mystery laundry keep eating cash.",
-    amount: 300,
-  },
-  {
-    year: 3,
-    title: "Daycare shuffle",
-    note: "A backup care week shows up at the worst possible time.",
-    amount: 650,
-    requiresPaidCare: true,
-  },
-  {
-    year: 4,
-    title: "Hand-me-down win",
-    note: "A cousin's clothes box lands like a tiny financial miracle.",
-    amount: -400,
-    requiresSaving: "handMeDowns",
   },
   {
     year: 5,
     title: "Kindergarten starts",
-    note: "School supplies enter the cart.",
+    note: "Diapers fade out, school costs wake up.",
     amount: 250,
-  },
-  {
-    year: 6,
-    title: "Summer care gap",
-    note: "School is out. Work still exists.",
-    amount: 900,
-    requiresPaidCare: true,
-  },
-  {
-    year: 7,
-    title: "Shoe growth speedrun",
-    note: "The new shoes are somehow already small.",
-    amount: 180,
-  },
-  {
-    year: 8,
-    title: "Booster seat year",
-    note: "Safety gear gets swapped again.",
-    amount: 220,
-  },
-  {
-    year: 9,
-    title: "Activity season",
-    note: "Fees, snacks, rides, and one very specific water bottle.",
-    amount: 450,
-  },
-  {
-    year: 10,
-    title: "Bulk run pays off",
-    note: "Costco snacks save a little this year.",
-    amount: -260,
-    requiresSaving: "costco",
-  },
-  {
-    year: 11,
-    title: "Dental surprise",
-    note: "A routine visit gets less routine.",
-    amount: 500,
-  },
-  {
-    year: 12,
-    title: "Middle school supplies",
-    note: "Calculator, shoes, fees, repeat.",
-    amount: 350,
-  },
-  {
-    year: 13,
-    title: "Teen grocery jump",
-    note: "The child becomes a pantry weather event.",
-    amount: 700,
-  },
-  {
-    year: 14,
-    title: "Phone pressure",
-    note: "The social-life budget arrives.",
-    amount: 420,
-  },
-  {
-    year: 15,
-    title: "Driver's ed season",
-    note: "More transportation, more insurance fear.",
-    amount: 900,
-  },
-  {
-    year: 16,
-    title: "Part-time job helps",
-    note: "The teen buys some of their own wants. Character development.",
-    amount: -500,
-  },
-  {
-    year: 17,
-    title: "Senior year fees",
-    note: "Graduation, activities, tests, and one last school invoice parade.",
-    amount: 750,
   },
   {
     year: 18,
@@ -149,8 +55,6 @@ const LIFE_EVENTS = [
 const MILESTONES = [
   { years: 1, label: "Age 1" },
   { years: 5, label: "Age 5" },
-  { years: 10, label: "Age 10" },
-  { years: 14, label: "Age 14" },
   { years: 18, label: "Age 18" },
 ];
 
@@ -218,20 +122,20 @@ const ITEMS = [
     id: "formula-can",
     name: "Formula Can",
     category: "Formula",
-    required: (years) => years <= 1,
+    required: (years, persona) => years <= 1 && persona.needsPaidCare,
     photo: "https://cdn.pixabay.com/photo/2017/07/28/15/53/drinking-milk-2549021_1280.jpg",
     price: 38,
-    target: (years) => (years <= 1 ? 36 : 0),
-    note: "One can at a time. Somehow they vanish.",
+    target: (years, persona) => (years <= 1 && persona.needsPaidCare ? 30 : 0),
+    note: "Only modeled when paid daycare makes bottle feeding part of the plan.",
   },
   {
     id: "grocery-week",
     name: "Grocery Week",
     category: "Food",
-    required: true,
+    required: (years) => years > 1,
     photo: "https://cdn.pixabay.com/photo/2017/07/28/15/53/drinking-milk-2549021_1280.jpg",
     price: 45,
-    target: (years) => years * 52,
+    target: (years) => (years <= 1 ? 0 : years * 52),
     note: "A child-sized weekly grocery add-on.",
   },
   {
@@ -256,22 +160,22 @@ const ITEMS = [
   },
   {
     id: "kid-outfit",
-    name: "Kid Outfit",
+    name: "Baby Outfit",
     category: "Clothes",
     required: true,
-    photo: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Baby_shoes_%28Unsplash%29.jpg/960px-Baby_shoes_%28Unsplash%29.jpg",
-    price: 24,
-    target: (years) => years * 6,
+    photo: "https://cdn.pixabay.com/photo/2018/05/12/06/04/onesie-3392517_1280.jpg",
+    price: 18,
+    target: (years) => (years <= 1 ? 10 : years * 5),
     note: "Growth spurts do not respect budgets.",
   },
   {
     id: "shoes",
     name: "Shoes",
     category: "Shoes",
-    required: true,
+    required: (years) => years > 1,
     photo: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Baby_shoes_%28Unsplash%29.jpg/960px-Baby_shoes_%28Unsplash%29.jpg",
     price: 32,
-    target: (years) => Math.max(1, years * 2),
+    target: (years) => (years <= 1 ? 0 : years * 2),
     note: "Small shoes, recurring betrayal.",
   },
   {
@@ -283,6 +187,56 @@ const ITEMS = [
     price: 45,
     target: (years) => years * 3,
     note: "Checkups, fevers, and the mystery rash era.",
+  },
+  {
+    id: "baby-bottles",
+    name: "Bottle Set",
+    category: "Bottles",
+    required: (years) => years <= 1,
+    photo: "https://cdn.pixabay.com/photo/2017/07/28/15/53/drinking-milk-2549021_1280.jpg",
+    price: 22,
+    target: (years) => (years <= 1 ? 3 : 0),
+    note: "Bottles, nipples, and the drawer they take over.",
+  },
+  {
+    id: "pacifier-pack",
+    name: "Pacifier Pack",
+    category: "Pacifiers",
+    required: (years) => years <= 1,
+    photo: "https://cdn.pixabay.com/photo/2023/07/04/09/36/baby-8105822_1280.jpg",
+    price: 9,
+    target: (years) => (years <= 1 ? 4 : 0),
+    note: "Several will disappear into another dimension.",
+  },
+  {
+    id: "crib",
+    name: "Crib",
+    category: "Sleep",
+    required: (years) => years <= 5,
+    photo: "https://cdn.pixabay.com/photo/2023/01/25/13/47/nursery-7743630_1280.jpg",
+    price: 240,
+    target: (years) => (years <= 5 ? 1 : 0),
+    note: "The first real furniture hit.",
+  },
+  {
+    id: "crib-mattress",
+    name: "Crib Mattress",
+    category: "Sleep",
+    required: (years) => years <= 5,
+    photo: "https://cdn.pixabay.com/photo/2023/01/25/13/47/nursery-7743630_1280.jpg",
+    price: 95,
+    target: (years) => (years <= 5 ? 1 : 0),
+    note: "A separate price tag, because of course.",
+  },
+  {
+    id: "sleep-sacks",
+    name: "Sleep Sack",
+    category: "Sleep",
+    required: (years) => years <= 1,
+    photo: "https://cdn.pixabay.com/photo/2022/08/15/14/26/baby-7388054_640.jpg",
+    price: 24,
+    target: (years) => (years <= 1 ? 3 : 0),
+    note: "Warm, safe sleep without loose blankets.",
   },
   {
     id: "childcare-week",
@@ -307,6 +261,56 @@ const ITEMS = [
     price: 120,
     target: (years) => (years <= 1 ? 1 : 2),
     note: "Non-negotiable, thankfully reusable.",
+  },
+  {
+    id: "stroller",
+    name: "Stroller",
+    category: "Gear",
+    required: (years) => years <= 5,
+    photo: "https://cdn.pixabay.com/photo/2019/04/02/16/08/baby-carriage-4098055_1280.jpg",
+    price: 160,
+    target: (years) => (years <= 5 ? 1 : 0),
+    note: "Errands become an equipment sport.",
+  },
+  {
+    id: "baby-monitor",
+    name: "Baby Monitor",
+    category: "Gear",
+    required: (years) => years <= 1,
+    photo: "https://cdn.pixabay.com/photo/2023/01/25/13/47/nursery-7743630_1280.jpg",
+    price: 70,
+    target: (years) => (years <= 1 ? 1 : 0),
+    note: "Peace of mind, sold separately.",
+  },
+  {
+    id: "bath-kit",
+    name: "Bath Kit",
+    category: "Bath",
+    required: (years) => years <= 1,
+    photo: "https://cdn.pixabay.com/photo/2023/07/04/09/36/baby-8105822_1280.jpg",
+    price: 34,
+    target: (years) => (years <= 1 ? 1 : 0),
+    note: "Tub, washcloths, soap, and slippery panic.",
+  },
+  {
+    id: "thermometer",
+    name: "Thermometer",
+    category: "Health",
+    required: true,
+    photo: "https://cdn.pixabay.com/photo/2018/06/09/17/13/doctor-3464763_1280.jpg",
+    price: 18,
+    target: () => 1,
+    note: "Tiny tool, large parental anxiety reduction.",
+  },
+  {
+    id: "medicine-kit",
+    name: "Medicine Kit",
+    category: "Health",
+    required: (years) => years <= 5,
+    photo: "https://cdn.pixabay.com/photo/2018/06/09/17/13/doctor-3464763_1280.jpg",
+    price: 32,
+    target: (years) => (years <= 1 ? 1 : 2),
+    note: "Saline, fever reducer, and midnight confidence.",
   },
   {
     id: "backpack",
@@ -409,6 +413,7 @@ const state = {
   personaId: "single",
   years: 1,
   childCount: 1,
+  riskSeed: Math.floor(Math.random() * 1000000),
   savings: new Set(["handMeDowns"]),
   purchases: Object.fromEntries(ITEMS.map((item) => [item.id, 0])),
 };
@@ -444,10 +449,7 @@ function getPersona() {
 
 function stageName(year) {
   if (year <= 1) return "Baby year";
-  if (year <= 4) return "Toddler years";
-  if (year <= 10) return "School age";
-  if (year <= 14) return "Middle years";
-  if (year <= 17) return "Teen years";
+  if (year <= 5) return "Early childhood";
   return "Age 18";
 }
 
@@ -457,10 +459,89 @@ function eventApplies(event) {
   return true;
 }
 
-function eventImpactTotal() {
+function seededRandom(seed) {
+  let value = seed;
+  value = (value ^ 61) ^ (value >>> 16);
+  value += value << 3;
+  value ^= value >>> 4;
+  value *= 0x27d4eb2d;
+  value ^= value >>> 15;
+  return ((value >>> 0) % 10000) / 10000;
+}
+
+function fixedEventTotal() {
   return LIFE_EVENTS
     .filter((event) => event.year <= state.years && eventApplies(event))
     .reduce((sum, event) => sum + event.amount * state.childCount, 0);
+}
+
+function boughtRatio(itemId) {
+  const item = ITEMS.find((candidate) => candidate.id === itemId);
+  if (!item) return 0;
+  const needed = Math.max(1, requiredQuantity(item));
+  return Math.min(1, state.purchases[itemId] / needed);
+}
+
+function healthEvent() {
+  const doctorRatio = boughtRatio("doctor-copay");
+  const medicineRatio = boughtRatio("medicine-kit");
+  const earlyCare = Math.max(doctorRatio, medicineRatio * 0.5);
+  const baseChance = state.years === 1 ? 0.48 : state.years === 5 ? 0.32 : 0.2;
+  const chance = Math.max(0.08, baseChance - earlyCare * 0.28);
+  const roll = seededRandom(state.riskSeed + state.years * 37 + state.childCount * 101);
+
+  if (roll > chance) {
+    return {
+      title: "No illness",
+      note: "This checkpoint gets lucky. The pediatrician bill stays boring.",
+      cost: 0,
+    };
+  }
+
+  const severityRoll = seededRandom(state.riskSeed + state.years * 53 + 17);
+  const severity =
+    severityRoll > 0.82
+      ? { title: "Urgent care surprise", base: 950 }
+      : severityRoll > 0.45
+        ? { title: "Ear infection week", base: 320 }
+        : { title: "Fever scare", base: 140 };
+  const lateMultiplier = 1 + (1 - doctorRatio) * 1.25;
+  const cost = Math.round(severity.base * lateMultiplier * state.childCount);
+  const caught = doctorRatio >= 0.75 ? "Caught early." : doctorRatio > 0 ? "Partly caught." : "Caught late.";
+
+  return {
+    title: severity.title,
+    note: `${caught} Doctor visits lower the chance and the damage.`,
+    cost,
+  };
+}
+
+function emergencyEvent() {
+  const bufferRatio = boughtRatio("emergency-100");
+  const baseChance = state.years === 1 ? 0.3 : state.years === 5 ? 0.38 : 0.46;
+  const chance = Math.max(0.1, baseChance - bufferRatio * 0.18);
+  const roll = seededRandom(state.riskSeed + state.years * 71 + state.childCount * 19);
+
+  if (roll > chance) {
+    return {
+      title: "No emergency",
+      note: "Nothing explodes this checkpoint. Rare, suspicious, welcome.",
+      cost: 0,
+    };
+  }
+
+  const base = state.years === 1 ? 450 : state.years === 5 ? 850 : 1600;
+  const cost = Math.round(base * (1 - bufferRatio * 0.75));
+
+  return {
+    title: "Emergency hit",
+    note: bufferRatio > 0 ? "Your $100 buffers absorb some of it." : "No buffer means the full hit lands.",
+    cost,
+  };
+}
+
+function eventImpactTotal() {
+  return fixedEventTotal() + healthEvent().cost + emergencyEvent().cost;
 }
 
 function familySize() {
@@ -592,7 +673,7 @@ function fullyCovered() {
 }
 
 function setPurchase(itemId, nextValue) {
-  state.purchases[itemId] = Math.max(0, Math.min(99, nextValue));
+  state.purchases[itemId] = Math.max(0, Math.min(9999, nextValue));
   render();
 }
 
@@ -618,7 +699,9 @@ function renderPersonas() {
 
 function renderYearRun() {
   const event = LIFE_EVENTS.find((item) => item.year === state.years);
-  const impact = event && eventApplies(event) ? event.amount * state.childCount : 0;
+  const health = healthEvent();
+  const emergency = emergencyEvent();
+  const impact = eventImpactTotal();
   const impactText = impact === 0 ? "No budget hit" : `${impact > 0 ? "+" : ""}${money.format(impact)}`;
   const milestoneIndex = MILESTONES.findIndex((milestone) => milestone.years === state.years);
 
@@ -650,6 +733,8 @@ function renderYearRun() {
     <span>At this point</span>
     <strong>${event.title}</strong>
     <p>${event.note}</p>
+    <p><b>${health.title}:</b> ${health.note} ${money.format(health.cost)}</p>
+    <p><b>${emergency.title}:</b> ${emergency.note} ${money.format(emergency.cost)}</p>
     <p>${impactText}</p>
   `;
 }
@@ -658,15 +743,22 @@ function renderSavings() {
   els.savingsGrid.innerHTML = SAVINGS.map((saving) => {
     const active = state.savings.has(saving.id) ? " is-active" : "";
     let status = "";
+    let statusClass = "is-neutral";
 
     if (saving.id === "wic") {
       status = isWicEligible() ? "Eligible" : "Not eligible";
+      statusClass = isWicEligible() ? "is-eligible" : "is-ineligible";
     }
 
     if (saving.id === "dhsCare") {
       if (!getPersona().needsPaidCare) status = "Not needed";
-      else if (isDhsEligible()) status = `Copay ${money.format(dhsMonthlyCopay())}/mo`;
-      else status = "Not eligible";
+      else if (isDhsEligible()) {
+        status = `Eligible: ${money.format(dhsMonthlyCopay())}/mo`;
+        statusClass = "is-eligible";
+      } else {
+        status = "Not eligible";
+        statusClass = "is-ineligible";
+      }
     }
 
     if (saving.id === "costco") {
@@ -677,7 +769,7 @@ function renderSavings() {
       <button class="saving-card${active}" type="button" data-saving="${saving.id}">
         <h3>${saving.name}</h3>
         <p>${saving.note}</p>
-        <p><strong>${status}</strong></p>
+        ${status ? `<span class="saving-status ${statusClass}">${status}</span>` : ""}
       </button>
     `;
   }).join("");
@@ -901,6 +993,7 @@ els.resetGame.addEventListener("click", () => {
   ITEMS.forEach((item) => {
     state.purchases[item.id] = 0;
   });
+  state.riskSeed = Math.floor(Math.random() * 1000000);
   render();
 });
 
