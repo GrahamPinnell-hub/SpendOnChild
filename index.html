@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Spend On Child</title>
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg?v=3" />
+    <link rel="stylesheet" href="./styles.css?v=3" />
   </head>
   <body>
     <header class="masthead">
@@ -15,7 +15,10 @@
         alt="Child playing with toys"
       />
       <div class="masthead__content">
-        <h1>Spend On Child</h1>
+        <div class="title-lockup">
+          <img class="site-logo" src="./favicon.svg" alt="" />
+          <h1>Spend On Child</h1>
+        </div>
       </div>
     </header>
 
@@ -46,11 +49,23 @@
         <div class="persona-grid" id="personaGrid"></div>
       </section>
 
-      <section class="control-band checkpoint-band" aria-label="Checkpoint controls">
+      <section class="run-section" aria-label="Year by year run">
         <div class="section-heading">
-          <h2>Checkpoint</h2>
+          <h2>Year Run</h2>
+          <div class="run-actions">
+            <button type="button" id="prevYear">Back</button>
+            <button type="button" id="nextYear">Next Year</button>
+          </div>
         </div>
-        <div class="checkpoint-grid" id="checkpointGrid"></div>
+        <div class="year-run">
+          <div class="year-card">
+            <span>Age</span>
+            <strong id="yearNumber">1</strong>
+            <p id="yearStage">Baby year</p>
+          </div>
+          <div class="year-track" id="yearTrack"></div>
+          <div class="life-event" id="lifeEvent"></div>
+        </div>
       </section>
 
       <section class="savings-section" aria-label="Savings options">
@@ -101,6 +116,6 @@
       </section>
     </main>
 
-    <script src="./script.js"></script>
+    <script src="./script.js?v=3"></script>
   </body>
 </html>

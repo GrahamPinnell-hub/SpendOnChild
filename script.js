@@ -31,21 +31,118 @@ const PERSONAS = [
   },
 ];
 
-const CHECKPOINTS = [
+const LIFE_EVENTS = [
   {
-    years: 1,
-    name: "Age 1",
-    note: "Newborn year",
+    year: 1,
+    title: "Baby math arrives",
+    note: "First-year gear and infant care hit before anyone sleeps.",
+    amount: 0,
   },
   {
-    years: 5,
-    name: "Age 5",
-    note: "Early childhood",
+    year: 2,
+    title: "Diaper phase keeps going",
+    note: "Wipes, backup clothes, and mystery laundry keep eating cash.",
+    amount: 300,
   },
   {
-    years: 18,
-    name: "Age 18",
-    note: "Long haul",
+    year: 3,
+    title: "Daycare shuffle",
+    note: "A backup care week shows up at the worst possible time.",
+    amount: 650,
+    requiresPaidCare: true,
+  },
+  {
+    year: 4,
+    title: "Hand-me-down win",
+    note: "A cousin's clothes box lands like a tiny financial miracle.",
+    amount: -400,
+    requiresSaving: "handMeDowns",
+  },
+  {
+    year: 5,
+    title: "Kindergarten starts",
+    note: "School supplies enter the cart.",
+    amount: 250,
+  },
+  {
+    year: 6,
+    title: "Summer care gap",
+    note: "School is out. Work still exists.",
+    amount: 900,
+    requiresPaidCare: true,
+  },
+  {
+    year: 7,
+    title: "Shoe growth speedrun",
+    note: "The new shoes are somehow already small.",
+    amount: 180,
+  },
+  {
+    year: 8,
+    title: "Booster seat year",
+    note: "Safety gear gets swapped again.",
+    amount: 220,
+  },
+  {
+    year: 9,
+    title: "Activity season",
+    note: "Fees, snacks, rides, and one very specific water bottle.",
+    amount: 450,
+  },
+  {
+    year: 10,
+    title: "Bulk run pays off",
+    note: "Costco snacks save a little this year.",
+    amount: -260,
+    requiresSaving: "costco",
+  },
+  {
+    year: 11,
+    title: "Dental surprise",
+    note: "A routine visit gets less routine.",
+    amount: 500,
+  },
+  {
+    year: 12,
+    title: "Middle school supplies",
+    note: "Calculator, shoes, fees, repeat.",
+    amount: 350,
+  },
+  {
+    year: 13,
+    title: "Teen grocery jump",
+    note: "The child becomes a pantry weather event.",
+    amount: 700,
+  },
+  {
+    year: 14,
+    title: "Phone pressure",
+    note: "The social-life budget arrives.",
+    amount: 420,
+  },
+  {
+    year: 15,
+    title: "Driver's ed season",
+    note: "More transportation, more insurance fear.",
+    amount: 900,
+  },
+  {
+    year: 16,
+    title: "Part-time job helps",
+    note: "The teen buys some of their own wants. Character development.",
+    amount: -500,
+  },
+  {
+    year: 17,
+    title: "Senior year fees",
+    note: "Graduation, activities, tests, and one last school invoice parade.",
+    amount: 750,
+  },
+  {
+    year: 18,
+    title: "College question",
+    note: "You can fund college, skip it, or stare into the FAFSA abyss.",
+    amount: 0,
   },
 ];
 
@@ -288,7 +385,12 @@ const state = {
 
 const els = {
   personaGrid: document.querySelector("#personaGrid"),
-  checkpointGrid: document.querySelector("#checkpointGrid"),
+  yearNumber: document.querySelector("#yearNumber"),
+  yearStage: document.querySelector("#yearStage"),
+  yearTrack: document.querySelector("#yearTrack"),
+  lifeEvent: document.querySelector("#lifeEvent"),
+  prevYear: document.querySelector("#prevYear"),
+  nextYear: document.querySelector("#nextYear"),
   savingsGrid: document.querySelector("#savingsGrid"),
   savingsSummary: document.querySelector("#savingsSummary"),
   remainingMoney: document.querySelector("#remainingMoney"),
@@ -309,6 +411,42 @@ const els = {
 
 function getPersona() {
   return PERSONAS.find((persona) => persona.id === state.personaId);
+}
+
+function stageName(year) {
+  if (year <= 1) return "Baby year";
+  if (year <= 4) return "Toddler years";
+  if (year <= 10) return "School age";
+  if (year <= 14) return "Middle years";
+  if (year <= 17) return "Teen years";
+  return "Age 18";
+}
+
+function cumulativeCost(base, year) {
+  if (year <= 1) return base[1] || 0;
+  if (year >= 18) return base[18] || 0;
+
+  if (year <= 5) {
+    const start = base[1] || 0;
+    const end = base[5] ?? start;
+    return start + ((end - start) * (year - 1)) / 4;
+  }
+
+  const start = base[5] ?? base[1] ?? 0;
+  const end = base[18] ?? start;
+  return start + ((end - start) * (year - 5)) / 13;
+}
+
+function eventApplies(event) {
+  if (event.requiresPaidCare && !getPersona().needsPaidCare) return false;
+  if (event.requiresSaving && !state.savings.has(event.requiresSaving)) return false;
+  return true;
+}
+
+function eventImpactTotal() {
+  return LIFE_EVENTS
+    .filter((event) => event.year <= state.years && eventApplies(event))
+    .reduce((sum, event) => sum + event.amount * state.childCount, 0);
 }
 
 function familySize() {
@@ -350,16 +488,24 @@ function isItemRequired(item) {
 }
 
 function baseCost(item) {
-  if (item.id === "childcare" && !getPersona().needsPaidCare) {
-    return item.stayHomeBase[state.years];
+  if (item.id === "college") {
+    return state.years >= 18 ? item.base[18] : 0;
   }
 
-  return item.base[state.years];
+  if (item.id === "school" && state.years < 5) {
+    return 0;
+  }
+
+  if (item.id === "childcare" && !getPersona().needsPaidCare) {
+    return cumulativeCost(item.stayHomeBase, state.years);
+  }
+
+  return cumulativeCost(item.base, state.years);
 }
 
 function firstFiveFoodCost() {
-  if (state.years === 1) return ITEMS.find((item) => item.id === "food").base[1];
-  return ITEMS.find((item) => item.id === "food").base[5];
+  const food = ITEMS.find((item) => item.id === "food");
+  return cumulativeCost(food.base, Math.min(state.years, 5));
 }
 
 function adjustedUnitCost(item) {
@@ -409,7 +555,8 @@ function itemTotal(item) {
 }
 
 function spentTotal() {
-  return ITEMS.reduce((sum, item) => sum + itemTotal(item), 0) + savingsFees();
+  const subtotal = ITEMS.reduce((sum, item) => sum + itemTotal(item), 0) + savingsFees() + eventImpactTotal();
+  return Math.max(0, subtotal);
 }
 
 function remainingTotal() {
@@ -455,28 +602,41 @@ function renderPersonas() {
   });
 }
 
-function renderCheckpoints() {
-  els.checkpointGrid.innerHTML = CHECKPOINTS.map((checkpoint) => {
-    const active = checkpoint.years === state.years ? " is-active" : "";
+function renderYearRun() {
+  const event = LIFE_EVENTS.find((item) => item.year === state.years);
+  const impact = event && eventApplies(event) ? event.amount * state.childCount : 0;
+  const impactText = impact === 0 ? "No budget hit" : `${impact > 0 ? "+" : ""}${money.format(impact)}`;
+
+  els.yearNumber.textContent = String(state.years);
+  els.yearStage.textContent = stageName(state.years);
+  els.prevYear.disabled = state.years === 1;
+  els.nextYear.disabled = state.years === 18;
+  els.nextYear.textContent = state.years === 18 ? "Finished" : "Next Year";
+
+  els.yearTrack.innerHTML = Array.from({ length: 18 }, (_, index) => {
+    const year = index + 1;
+    const status = year === state.years ? " is-current" : year < state.years ? " is-past" : "";
+
     return `
-      <button class="checkpoint-card${active}" type="button" data-years="${checkpoint.years}">
-        <h3>${checkpoint.name}</h3>
-        <strong>${checkpoint.years} ${checkpoint.years === 1 ? "year" : "years"}</strong>
-        <p>${checkpoint.note}</p>
+      <button class="year-dot${status}" type="button" data-year="${year}" aria-label="Jump to age ${year}">
+        ${year}
       </button>
     `;
   }).join("");
 
-  els.checkpointGrid.querySelectorAll("[data-years]").forEach((button) => {
+  els.yearTrack.querySelectorAll("[data-year]").forEach((button) => {
     button.addEventListener("click", () => {
-      state.years = Number(button.dataset.years);
+      state.years = Number(button.dataset.year);
       render();
     });
   });
-}
 
-function totalBudgetForYears(years) {
-  return getPersona().annualIncome * years;
+  els.lifeEvent.innerHTML = `
+    <span>This year</span>
+    <strong>${event.title}</strong>
+    <p>${event.note}</p>
+    <p>${impactText}</p>
+  `;
 }
 
 function renderSavings() {
@@ -557,7 +717,7 @@ function renderVerdict() {
 
   if (covered === state.childCount && remaining >= 0) {
     title = "It works";
-    body = `All ${state.childCount} attempted ${state.childCount === 1 ? "child is" : "children are"} covered through ${state.years === 18 ? "age 18" : `year ${state.years}`}.`;
+    body = `All ${state.childCount} attempted ${state.childCount === 1 ? "child is" : "children are"} covered through age ${state.years}.`;
   } else if (covered > 0) {
     title = `${covered} covered`;
     body = `${covered} ${covered === 1 ? "child has" : "children have"} the core needs funded, but the rest still need coverage.`;
@@ -569,7 +729,7 @@ function renderVerdict() {
       : " College is not paid, which is a very common American plot twist.";
   }
 
-  els.progressTitle.textContent = `${getPersona().name}: ${CHECKPOINTS.find((c) => c.years === state.years).name}`;
+  els.progressTitle.textContent = `${getPersona().name}: Age ${state.years}`;
   els.verdict.innerHTML = `
     <strong>${title}</strong>
     <p>${body}</p>
@@ -583,7 +743,7 @@ function renderItems() {
     const quantity = state.purchases[item.id];
     const disabled = unitCost === 0 && item.id !== "school";
     const hiddenForEarlyCollege = item.id === "college" && state.years !== 18;
-    const hiddenEmptySchool = item.id === "school" && state.years === 1;
+    const hiddenEmptySchool = item.id === "school" && state.years < 5;
 
     if (hiddenForEarlyCollege || hiddenEmptySchool) return "";
 
@@ -641,6 +801,15 @@ function renderReceipt() {
     `);
   }
 
+  if (eventImpactTotal() !== 0) {
+    purchasedRows.push(`
+      <div class="receipt-row">
+        <strong>Life events through age ${state.years}</strong>
+        <span>${money.format(eventImpactTotal())}</span>
+      </div>
+    `);
+  }
+
   if (purchasedRows.length === 0) {
     purchasedRows.push(`
       <div class="receipt-row">
@@ -673,7 +842,7 @@ function renderSources() {
 
 function render() {
   renderPersonas();
-  renderCheckpoints();
+  renderYearRun();
   renderSavings();
   renderLedger();
   renderMeters();
@@ -690,6 +859,16 @@ els.addChild.addEventListener("click", () => {
 
 els.removeChild.addEventListener("click", () => {
   state.childCount = Math.max(1, state.childCount - 1);
+  render();
+});
+
+els.nextYear.addEventListener("click", () => {
+  state.years = Math.min(18, state.years + 1);
+  render();
+});
+
+els.prevYear.addEventListener("click", () => {
+  state.years = Math.max(1, state.years - 1);
   render();
 });
 
